@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import twitterLogo from './assets/twitter-logo.svg';
 
@@ -8,18 +8,23 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
 
+  // States
+  const [walletAddress, setWalletAddres] = useState(null);
+
+  // Actions
   const checkIfWalletIsConnected = async () => {
     try {
       const { solana } = window;
       // check if phantom wallet is connected
       if (solana && solana.isPhantom) {
         console.log("Nice! Phantom wallet is connected");
-
         const response = await solana.connect({ onlyIfTrusted: true });
         console.log(
           "Connected with public key:",
           response.publicKey.toString()
         );
+        // set state walletAddress
+        setWalletAddres(response.publicKey.toString());
       } else {
         alert("Solana object not found! Get a 👻 wallet https://phantom.app/download");
       }
