@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import twitterLogo from './assets/twitter-logo.svg';
 
@@ -7,6 +7,36 @@ const TWITTER_HANDLE = 'danielpartidag';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
+
+  const checkIfWalletIsConnected = async () => {
+    try {
+      const { solana } = window;
+      // check if phantom wallet is connected
+      if (solana && solana.isPhantom) {
+        console.log("Nice! Phantom wallet is connected");
+
+        const response = await solana.connect({ onlyIfTrusted: true });
+        console.log(
+          "Connected with public key:",
+          response.publicKey.toString()
+        );
+      } else {
+        alert("Solana object not found! Get a 👻 wallet https://phantom.app/download");
+      }
+    } catch (error) {
+      console.error("Ups, we could not connect to Phantom wallet", error);
+    }
+  };
+
+  // Check once (call checkIfWalletIsConnected) once the page loads
+  useEffect(() => {
+    const onLoad = async () => {
+      await checkIfWalletIsConnected();
+    };
+    window.addEventListener("load", onLoad);
+    return () => window.removeEventListener("load", onLoad);
+  }, []);
+
   return (
     <div className="App">
       <div className="container">
@@ -21,7 +51,7 @@ const App = () => {
             href={TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
-          >{`built on @${TWITTER_HANDLE}`}</a>
+          >{`built by @${TWITTER_HANDLE}`}</a>
         </div>
       </div>
     </div>
