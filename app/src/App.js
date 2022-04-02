@@ -17,10 +17,10 @@ const App = () => {
       const { solana } = window;
       // check if phantom wallet is connected
       if (solana && solana.isPhantom) {
-        console.log("Nice! Phantom wallet is connected");
+        console.log("Nice! 👻 wallet is connected");
         const response = await solana.connect({ onlyIfTrusted: true });
         console.log(
-          "Connected with public key:",
+          "Connected with public 🔑:",
           response.publicKey.toString()
         );
         // set state walletAddress
@@ -33,7 +33,16 @@ const App = () => {
     }
   };
 
-  const connectWallet = () => {};
+  const connectWallet = async () => {
+    const { solana } = window;
+
+    if (solana) {
+      const response = await solana.connect();
+      const publicKey = response.publicKey.toString()
+      console.log("Connected with public 🔑", publicKey);
+        setWalletAddres(publicKey)
+    }
+  };
 
   const renderNotConnectedContainer = () => {
     return (
