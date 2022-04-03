@@ -24,3 +24,5 @@ Have some questions make sure you head over to your [buildspace Dashboard](https
 - yarn --version -> 1.22.11 (or higher!)
 - ts-node --version -> v10.2.1 (or higher!)
 - Solana installation <https://docs.solana.com/cli/install-solana-cli-tools#use-solanas-install-tool>
+- Metaplex repo <https://github.com/metaplex-foundation/metaplex/tags>
+  
