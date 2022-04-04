@@ -32,4 +32,6 @@ Have some questions make sure you head over to your [buildspace Dashboard](https
   
 ## Deployment
 
+- Deploy contract by running from the app folder "ts-node "C:\Users\d92187\metaplex\js\packages\cli\src\candy-machine-v2-cli.ts" upload -e devnet -k "C:\Users\d92187\.config\solana\devnet.json" -cp config.json ./assets"
 - NFT collection contract deployed at HiMLEtEXn4aTZYcZfuQSM9oQ8v6J9ab5nQ9ixsP8M33k <https://explorer.solana.com/address/HiMLEtEXn4aTZYcZfuQSM9oQ8v6J9ab5nQ9ixsP8M33k?cluster=devnet>
+- To re-deploy NFTs and run upload again, delete .cache folder of /app folder and run from the app folder "ts-node "C:\Users\d92187\metaplex\js\packages\cli\src\candy-machine-v2-cli.ts" upload -e devnet -k "C:\Users\d92187\.config\solana\devnet.json" -cp config.json ./assets"
