@@ -1,5 +1,9 @@
 # buildspace Solana NFT Drop Project
 
+## How to run
+
+- Root folder is ./app folder
+
 ## Welcome 👋
 
 To get started with this course, clone this repo and follow these commands:
