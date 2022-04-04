@@ -30,3 +30,6 @@ Have some questions make sure you head over to your [buildspace Dashboard](https
 - Solana installation <https://docs.solana.com/cli/install-solana-cli-tools#use-solanas-install-tool>
 - Metaplex repo <https://github.com/metaplex-foundation/metaplex/tags>
   
+## Deployment
+
+- NFT collection contract deployed at HiMLEtEXn4aTZYcZfuQSM9oQ8v6J9ab5nQ9ixsP8M33k <https://explorer.solana.com/address/HiMLEtEXn4aTZYcZfuQSM9oQ8v6J9ab5nQ9ixsP8M33k?cluster=devnet>
