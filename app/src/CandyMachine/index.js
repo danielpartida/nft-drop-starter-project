@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3 } from '@project-serum/anchor';
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
@@ -20,6 +20,56 @@ const opts = {
 };
 
 const CandyMachine = ({ walletAddress }) => {
+
+  const getProvider = () => {
+    const rpcHost = process.env.REAC_APP_SOLANA_RPC_HOST;
+    const connection = new Connection(rpcHost);
+
+    const provider = new Provider(
+      connection,
+      window.solana,
+      opts.preflightCommitment
+    );
+
+    return provider;
+  };
+
+  const getCandyMachineState = async () => {
+    const provider = getProvider();
+
+    // (idl = interface description language) -> info to interact w/ candy machine
+    const idl = await Program.fetchIdl(candyMachineProgram, provider);
+
+    // instance of program to interact w/ candy machine (similar to Web2 DB connection)
+    const program = new Program(idl, candyMachineProgram, provider);
+
+    // fetch metadata from candy machine (from the blockchain)
+    const candyMachine = await program.account.candyMachine.fetch(
+      process.env.REACT_APP_CANDY_MACHINE_ID
+    );
+    
+    // parse all metadata
+    const itemsAvailable = candyMachine.data.itemsAvailable.toNumber();
+    const itemsRedeemmed = candyMachine.itemsRedeemmed.toNumber();
+    const itemsRemaining = itemsAvailable - itemsRedeemmed;
+    const goLiveData = candyMachine.data.goLiveDate.toNumber();
+    const presale = 
+      candyMachine.data.whitelistMintSettings &&
+      candyMachine.data.whitelistMintSettings.presale &&
+      (!candyMachine.data.goLiveDate ||
+        candyMachine.data.goLiveDate.toNumber > new Date().getTime() / 1000);
+
+    const goLiveDateTimeString = `${new Date(goLiveData * 1000).toGMTString()}`
+
+    console.log({
+      itemsAvailable,
+      itemsRedeemmed,
+      itemsRemaining,
+      goLiveData,
+      goLiveDateTimeString,
+      presale
+    })
+  };
 
   const getCandyMachineCreator = async (candyMachine) => {
     const candyMachineID = new PublicKey(candyMachine);
@@ -296,6 +346,10 @@ const CandyMachine = ({ walletAddress }) => {
     }
     return [];
   };
+
+  useEffect(() => {
+    getCandyMachineState();
+  }, []);
 
   return (
     <div className="machine-container">
