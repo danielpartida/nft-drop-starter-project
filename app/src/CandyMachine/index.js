@@ -176,15 +176,17 @@ const CandyMachine = ({ walletAddress }) => {
     const userTokenAccountAddress = (
       await getAtaForMint(mint.publicKey, walletAddress.publicKey)
     )[0];
-  
+      
     const userPayingAccountAddress = candyMachine.state.tokenMint
       ? (await getAtaForMint(candyMachine.state.tokenMint, walletAddress.publicKey))[0]
       : walletAddress.publicKey;
-  
+
+    // parameters that candy machine needs to mint NFT
     const candyMachineAddress = candyMachine.id;
     const remainingAccounts = [];
     const signers = [mint];
     const cleanupInstructions = [];
+    // transaction is bundle of instructions
     const instructions = [
       web3.SystemProgram.createAccount({
         fromPubkey: walletAddress.publicKey,
@@ -218,7 +220,8 @@ const CandyMachine = ({ walletAddress }) => {
         1,
       ),
     ];
-  
+    
+    // check if Candy machine is using captcha
     if (candyMachine.state.gatekeeper) {
       remainingAccounts.push({
         pubkey: (
@@ -340,7 +343,8 @@ const CandyMachine = ({ walletAddress }) => {
     const [candyMachineCreator, creatorBump] = await getCandyMachineCreator(
       candyMachineAddress,
     );
-  
+    
+    // create instructions for minting NFT
     instructions.push(
       await candyMachine.program.instruction.mintNft(creatorBump, {
         accounts: {
@@ -365,7 +369,8 @@ const CandyMachine = ({ walletAddress }) => {
           remainingAccounts.length > 0 ? remainingAccounts : undefined,
       }),
     );
-  
+    
+    // send connection, wallet and instructions to candy machine
     try {
       return (
         await sendTransactions(
@@ -388,8 +393,8 @@ const CandyMachine = ({ walletAddress }) => {
   return (
     candyMachine && (
       <div className="machine-container">
-        <p>Drop Date:</p>
-        <p>Items Minted:</p>
+        <p>{`Drop Date: ${candyMachine.state.goLiveDateTimeString}`}</p>
+        <p>{`Items Minted: ${candyMachine.state.itemsRedeemed} / ${candyMachine.state.itemsAvailable}`}</p>
         <button className="cta-button mint-button" onClick={mintToken}>
           Mint NFT
         </button>
