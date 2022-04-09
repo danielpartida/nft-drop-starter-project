@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3 } from '@project-serum/anchor';
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
@@ -21,8 +21,10 @@ const opts = {
 
 const CandyMachine = ({ walletAddress }) => {
 
+  const [candyMachine, setCandyMachine] = useState("");
+
   const getProvider = () => {
-    const rpcHost = process.env.REAC_APP_SOLANA_RPC_HOST;
+    const rpcHost = process.env.REACT_APP_SOLANA_RPC_HOST;
     const connection = new Connection(rpcHost);
 
     const provider = new Provider(
@@ -50,7 +52,7 @@ const CandyMachine = ({ walletAddress }) => {
     
     // parse all metadata
     const itemsAvailable = candyMachine.data.itemsAvailable.toNumber();
-    const itemsRedeemmed = candyMachine.itemsRedeemmed.toNumber();
+    const itemsRedeemmed = candyMachine.itemsRedeemed.toNumber();
     const itemsRemaining = itemsAvailable - itemsRedeemmed;
     const goLiveData = candyMachine.data.goLiveDate.toNumber();
     const presale = 
@@ -349,7 +351,7 @@ const CandyMachine = ({ walletAddress }) => {
 
   useEffect(() => {
     getCandyMachineState();
-  }, []);
+    }, [])
 
   return (
     <div className="machine-container">
