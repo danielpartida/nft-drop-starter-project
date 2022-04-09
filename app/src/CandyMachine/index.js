@@ -61,7 +61,9 @@ const CandyMachine = ({ walletAddress }) => {
       (!candyMachine.data.goLiveDate ||
         candyMachine.data.goLiveDate.toNumber > new Date().getTime() / 1000);
 
-    const goLiveDateTimeString = `${new Date(goLiveData * 1000).toGMTString()}`
+    const goLiveDateTimeString = `${new Date(goLiveData * 1000)
+      .toLocaleDateString()} @ ${new Date(goLiveData * 1000)
+      .toLocaleTimeString()}`;
 
     console.log({
       itemsAvailable,
