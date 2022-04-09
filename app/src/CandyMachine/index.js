@@ -4,6 +4,7 @@ import { Program, Provider, web3 } from '@project-serum/anchor';
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
 import { sendTransactions } from './connection';
 import './CandyMachine.css';
+import CountdownTimer from '../CountdownTimer';
 import {
   candyMachineProgram,
   TOKEN_METADATA_PROGRAM_ID,
@@ -386,6 +387,19 @@ const CandyMachine = ({ walletAddress }) => {
     return [];
   };
 
+  const renderDropTimer = () => {
+    const currentDate = new Date();
+    const dropDate = new Date(candyMachine.state.goLiveData * 1000);
+
+    if (currentDate < dropDate) {
+      console.log("Before drop date!");
+      
+      return <CountdownTimer dropDate={dropDate} />;
+    }
+
+    return <p>{`Drop Date: ${candyMachine.state.goLiveDateTimeString}`}</p>;
+  };
+
   useEffect(() => {
     getCandyMachineState();
     }, [])
@@ -393,11 +407,13 @@ const CandyMachine = ({ walletAddress }) => {
   return (
     candyMachine && (
       <div className="machine-container">
-        <p>{`Drop Date: ${candyMachine.state.goLiveDateTimeString}`}</p>
+        {renderDropTimer()}
         <p>{`Items Minted: ${candyMachine.state.itemsRedeemed} / ${candyMachine.state.itemsAvailable}`}</p>
         <button className="cta-button mint-button" onClick={mintToken}>
           Mint NFT
         </button>
+        {/* {mints.length > 0 && renderMintedItems()}
+        {isLoadingMints && <p>LOADING MINTS...</p>} */}
       </div>
     )
   );
