@@ -21,7 +21,7 @@ const opts = {
 
 const CandyMachine = ({ walletAddress }) => {
 
-  const [candyMachine, setCandyMachine] = useState("");
+  const [candyMachine, setCandyMachine] = useState(null);
 
   const getProvider = () => {
     const rpcHost = process.env.REACT_APP_SOLANA_RPC_HOST;
@@ -52,8 +52,8 @@ const CandyMachine = ({ walletAddress }) => {
     
     // parse all metadata
     const itemsAvailable = candyMachine.data.itemsAvailable.toNumber();
-    const itemsRedeemmed = candyMachine.itemsRedeemed.toNumber();
-    const itemsRemaining = itemsAvailable - itemsRedeemmed;
+    const itemsRedeemed = candyMachine.itemsRedeemed.toNumber();
+    const itemsRemaining = itemsAvailable - itemsRedeemed;
     const goLiveData = candyMachine.data.goLiveDate.toNumber();
     const presale = 
       candyMachine.data.whitelistMintSettings &&
@@ -65,9 +65,39 @@ const CandyMachine = ({ walletAddress }) => {
       .toLocaleDateString()} @ ${new Date(goLiveData * 1000)
       .toLocaleTimeString()}`;
 
+    setCandyMachine({
+      id: process.env.REACT_APP_CANDY_MACHINE_ID,
+      program,
+      state: {
+        itemsAvailable,
+        itemsRedeemed,
+        itemsRemaining,
+        goLiveData,
+        goLiveDateTimeString,
+        isSoldOut: itemsRemaining === 0,
+        isActive:
+          (presale ||
+            candyMachine.data.goLiveDate.toNumber() < new Date().getTime() / 1000) &&
+          (candyMachine.endSettings
+            ? candyMachine.endSettings.endSettingType.date
+              ? candyMachine.endSettings.number.toNumber() > new Date().getTime() / 1000
+              : itemsRedeemed < candyMachine.endSettings.number.toNumber()
+            : true),
+        isPresale: presale,
+        goLiveDate: candyMachine.data.goLiveDate,
+        treasury: candyMachine.wallet,
+        tokenMint: candyMachine.tokenMint,
+        gatekeeper: candyMachine.data.gatekeeper,
+        endSettings: candyMachine.data.endSettings,
+        whitelistMintSettings: candyMachine.data.whitelistMintSettings,
+        hiddenSettings: candyMachine.data.hiddenSettings,
+        price: candyMachine.data.price,
+      },
+    });
+
     console.log({
       itemsAvailable,
-      itemsRedeemmed,
+      itemsRedeemmed: itemsRedeemed,
       itemsRemaining,
       goLiveData,
       goLiveDateTimeString,
@@ -356,13 +386,15 @@ const CandyMachine = ({ walletAddress }) => {
     }, [])
 
   return (
-    <div className="machine-container">
-      <p>Drop Date:</p>
-      <p>Items Minted:</p>
-      <button className="cta-button mint-button" onClick={mintToken}>
-        Mint NFT
-      </button>
-    </div>
+    candyMachine && (
+      <div className="machine-container">
+        <p>Drop Date:</p>
+        <p>Items Minted:</p>
+        <button className="cta-button mint-button" onClick={mintToken}>
+          Mint NFT
+        </button>
+      </div>
+    )
   );
 };
 
